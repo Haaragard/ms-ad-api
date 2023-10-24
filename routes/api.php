@@ -26,4 +26,5 @@ Route::group([
     'controller' => UserController::class,
 ], function () {
     Route::post('', 'store');
+    Route::patch('', 'patch');
 });
