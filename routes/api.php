@@ -27,4 +27,5 @@ Route::group([
 ], function () {
     Route::post('', 'store');
     Route::patch('', 'patch');
+    Route::delete('/{id}', 'delete');
 });
