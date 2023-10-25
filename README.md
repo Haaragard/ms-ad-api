@@ -5,6 +5,8 @@ This project was made entirely focused on Microservices + RabbitMQ study.
 
 ## Start up
 
+Best usage of this repo is with [ms-study](https://github.com/Haaragard/microservices-communication-and-search)
+
 ### Requirements
 
 - Docker
