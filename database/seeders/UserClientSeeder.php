@@ -6,8 +6,10 @@ use App\Infrastructure\Broker\RabbitMQ\Producer\UserCreatedProducer;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Log;
 
-class UserSeeder extends Seeder
+class UserClientSeeder extends Seeder
 {
     public function __construct(private UserCreatedProducer $producer)
     { }
@@ -34,8 +36,11 @@ class UserSeeder extends Seeder
     {
         DB::transaction(function () use ($user) {
             $user->save();
-            $this->producer->setUser($user);
-            $this->producer->basicPush();
+
+            $response = Http::post('http://ms-consumer-api/api/users', $user->toArray());
+            if ($response->failed()) {
+                Log::error("Error on client post {$user->id}", $response->json());
+            }
         });
     }
 }
