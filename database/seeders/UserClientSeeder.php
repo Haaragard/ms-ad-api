@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Infrastructure\Broker\RabbitMQ\Producer\UserCreatedProducer;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Log;
@@ -22,9 +23,13 @@ class UserClientSeeder extends Seeder
         $users = User::factory(1000)->make();
 
         $start = microtime(true);
+
         foreach ($users as $user) {
             $this->storeUser($user);
         }
+
+        // $this->storeUserSaveLater($users);
+
         $end = microtime(true);
 
         $diff = $end - $start;
@@ -42,5 +47,19 @@ class UserClientSeeder extends Seeder
                 Log::error("Error on client post {$user->id}", $response->json());
             }
         });
+    }
+
+    private function storeUserSaveLater(Collection $users): void
+    {
+        foreach ($users as $user) {
+            $user->save();
+        }
+
+        foreach ($users as $user) {
+            $response = Http::post('http://ms-consumer-api/api/users', $user->toArray());
+            if ($response->failed()) {
+                Log::error("Error on client post {$user->id}", $response->json());
+            }
+        }
     }
 }
