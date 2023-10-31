@@ -13,8 +13,11 @@ abstract class BaseProducerAbstract
     private AMQPChannel $channel;
 
     // -- Overridable attributes --
-    protected string $queue = 'default';
-    protected string $exchange = '';
+
+    // Exchange
+    protected string $exchangePrefix = 'ms_ad';
+    protected string $exchangeName = 'default';
+    protected string $exchangeType = 'topic';
     protected string $routingKey = '';
     protected bool $mandatory = false;
     protected bool $immediate = false;
@@ -25,7 +28,12 @@ abstract class BaseProducerAbstract
     {
         $this->declareBroker();
         $this->startChannel();
-        $this->declareQueue();
+        $this->configChannel();
+    }
+
+    protected function getExchangeName(): string
+    {
+        return sprintf('%s.%s', $this->exchangePrefix, $this->exchangeName);
     }
 
     private function declareBroker(): void
@@ -44,16 +52,22 @@ abstract class BaseProducerAbstract
         $this->channel = $this->broker->getChannel();
     }
 
-    private function declareQueue(): void
+    private function configChannel(): void
     {
-        $this->channel->queue_declare($this->queue);
+        $this->channel->exchange_declare(
+            $this->getExchangeName(),
+            $this->exchangeType,
+            false,
+            true,
+            false
+        );
     }
 
     public function basicPush(): void
     {
         $this->channel->basic_publish(
             $this->getBasicMessage(),
-            $this->exchange,
+            $this->getExchangeName(),
             $this->routingKey,
             $this->mandatory,
             $this->immediate,
