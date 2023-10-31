@@ -18,4 +18,9 @@ class UserCreatedProducer extends BaseProducerAbstract
     {
         return $this->user->toArray();
     }
+
+    public function setUser(User $user): void
+    {
+        $this->user = $user;
+    }
 }
