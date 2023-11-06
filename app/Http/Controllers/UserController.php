@@ -35,7 +35,7 @@ class UserController extends Controller
         return $response;
     }
 
-    public function patch(UpdateUserRequest $request): JsonResponse
+    public function put(UpdateUserRequest $request): JsonResponse
     {
         $data = $request->validated();
         $id = $data['id'];

@@ -26,6 +26,6 @@ Route::group([
     'controller' => UserController::class,
 ], function () {
     Route::post('', 'store');
-    Route::patch('', 'patch');
+    Route::put('', 'put');
     Route::delete('/{id}', 'delete');
 });
