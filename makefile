@@ -1,8 +1,8 @@
 migrate-fresh:
-	@docker exec -t ms-ad-api php artisan migrate:fresh
+	@docker exec -it ms-ad-api php artisan migrate:fresh
 
 db-seed-client:
-	@docker exec -t ms-ad-api php artisan db:seed UserClientSeeder
+	@docker exec -it ms-ad-api php artisan db:seed UserClientSeeder
 
 db-seed-mq:
-	@docker exec -t ms-ad-api php artisan db:seed UserSeeder
+	@docker exec -it ms-ad-api php artisan db:seed UserSeeder
