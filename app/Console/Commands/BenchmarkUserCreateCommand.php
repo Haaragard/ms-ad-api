@@ -36,10 +36,17 @@ class BenchmarkUserCreateCommand extends Command
      */
     public function handle()
     {
-        Benchmark::dd([
+        $measures = Benchmark::measure([
             'syncCreation' => fn() => $this->syncCreation(),
             'asyncCreation' => fn() => $this->asyncCreation(),
         ], 100);
+
+        $result = collect($measures)
+            ->map(fn ($average) => number_format($average, 3).'ms');
+
+        $this->table($result->keys()->toArray(), [$result->values()->toArray()]);
+
+        return Command::SUCCESS;
     }
     
     private function syncCreation(): void
